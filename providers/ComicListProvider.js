@@ -5,7 +5,7 @@ import { useAuth } from "./AuthProvider";
 
 const ComicsContext = React.createContext(null);
 
-const ComicsProvider = ({ children}) => {
+const ComicsProvider = ({ navigation, children}) => {
   const [comics, setComics] = useState([]);
   const { user } = useAuth();
 
@@ -23,6 +23,7 @@ const ComicsProvider = ({ children}) => {
     };
     // open a realm for this particular project
     Realm.open(config).then((projectRealm) => {
+    console.log(navigation);
       realmRef.current = projectRealm;
 
       const syncTasks = projectRealm.objects("comic");
