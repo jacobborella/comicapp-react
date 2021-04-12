@@ -6,10 +6,10 @@ import styles from "../stylesheet";
 import { Overlay } from "react-native-elements";
 import { ManageTeam } from "../components/ManageTeam";
 
-import { useComics } from "../providers/ComicsProvider";
+import { useComics } from "../providers/ComicListProvider";
 import {ComicItem} from "../components/ComicItem"
 
-export function ComicListView() {
+export function ComicListView({navigation}) {
 
 
   const { comics } = useComics();
@@ -18,7 +18,7 @@ export function ComicListView() {
     <FlatList
                       data={comics}
                       renderItem={({item, index}) => {
-                        return <ComicItem comic={item}/>
+                        return <ComicItem comic={item} navigation={navigation}/>
                       }}
                       keyExtractor={(item, index) => item._id}
                           />

@@ -4,12 +4,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { AuthProvider } from "./providers/AuthProvider";
-import { ComicsProvider } from "./providers/ComicsProvider";
+import { ComicListProvider } from "./providers/ComicListProvider";
 import { TasksProvider } from "./providers/TasksProvider";
 
 import { WelcomeView } from "./views/WelcomeView";
 import { ComicListView } from "./views/ComicListView";
-import { TasksView } from "./views/TasksView";
+import { ComicView } from "./views/ComicView";
 
 import { Logout } from "./components/Logout";
 
@@ -27,20 +27,21 @@ const App = () => {
           />
           <Stack.Screen name="Comic List">
             {(props) => {
+            const { navigation, route } = props;
               return (
-                <ComicsProvider>
-                  <ComicListView />
-                </ComicsProvider>
+                <ComicListProvider>
+                  <ComicListView navigation={navigation}/>
+                </ComicListProvider>
               );
             }}
           </Stack.Screen>
-          <Stack.Screen name="Task List">
+          <Stack.Screen name="Comic View">
             {(props) => {
-              const { navigation, route } = props;
-              const { user, projectPartition } = route.params;
+              const { navigation } = props;
+              const { route } = props;
               return (
-                <TasksProvider user={user} projectPartition={projectPartition}>
-                  <TasksView navigation={navigation} route={route} />
+                <TasksProvider navigation={navigation} route={route}>
+                  <ComicView navigation={navigation} route={route}/>
                 </TasksProvider>
               );
             }}

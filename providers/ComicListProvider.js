@@ -5,7 +5,7 @@ import { useAuth } from "./AuthProvider";
 
 const ComicsContext = React.createContext(null);
 
-const ComicsProvider = ({ navigation, children}) => {
+const ComicListProvider = ({ navigation, children}) => {
   const [comics, setComics] = useState([]);
   const { user } = useAuth();
 
@@ -67,4 +67,4 @@ const useComics = () => {
   return task;
 };
 
-export { ComicsProvider, useComics };
+export { ComicListProvider, useComics };

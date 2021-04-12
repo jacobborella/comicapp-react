@@ -1,13 +1,14 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import Realm from "realm";
-import { Task } from "../schemas";
+import { comicSchema } from "../schemas";
 import { useAuth } from "./AuthProvider";
 
 const TasksContext = React.createContext(null);
 
-const TasksProvider = ({ children, projectPartition }) => {
+const TasksProvider = ({ children, route }) => {
   const [tasks, setTasks] = useState([]);
   const { user } = useAuth();
+  const { comicId } = route.params;
 
   // Use a Ref to store the realm rather than the state because it is not
   // directly rendered, so updating it should not trigger a re-render as using
@@ -18,19 +19,21 @@ const TasksProvider = ({ children, projectPartition }) => {
     const config = {
       sync: {
         user: user,
-        partitionValue: projectPartition,
+        partitionValue: user.id,
       },
     };
     // open a realm for this particular project
     Realm.open(config).then((projectRealm) => {
       realmRef.current = projectRealm;
 
-      const syncTasks = projectRealm.objects("Task");
-      let sortedTasks = syncTasks.sorted("name");
-      setTasks([...sortedTasks]);
-      sortedTasks.addListener(() => {
-        setTasks([...sortedTasks]);
+      const comicFound = projectRealm.objectForPrimaryKey("comic", comicId);
+      setTasks(comicFound);
+      /*
+      comicFound.addListener(() => {
+        //TODO: hvorfor virker det ikke? setTasks({ ...comicFound })
+        console.log('something changed');
       });
+      */
     });
 
     return () => {
@@ -42,47 +45,15 @@ const TasksProvider = ({ children, projectPartition }) => {
         setTasks([]);
       }
     };
-  }, [user, projectPartition]);
+  }, [user]);
 
-  const createTask = (newTaskName) => {
+  const saveComic = (comicId, title) => {
+    console.log(title);
     const projectRealm = realmRef.current;
     projectRealm.write(() => {
-      // Create a new task in the same partition -- that is, in the same project.
-      projectRealm.create(
-        "Task",
-        new Task({
-          name: newTaskName || "New Task",
-          partition: projectPartition,
-        })
-      );
-    });
-  };
-
-  const setTaskStatus = (task, status) => {
-    // One advantage of centralizing the realm functionality in this provider is
-    // that we can check to make sure a valid status was passed in here.
-    if (
-      ![
-        Task.STATUS_OPEN,
-        Task.STATUS_IN_PROGRESS,
-        Task.STATUS_COMPLETE,
-      ].includes(status)
-    ) {
-      throw new Error(`Invalid status: ${status}`);
-    }
-    const projectRealm = realmRef.current;
-
-    projectRealm.write(() => {
-      task.status = status;
-    });
-  };
-
-  // Define the function for deleting a task.
-  const deleteTask = (task) => {
-    const projectRealm = realmRef.current;
-    projectRealm.write(() => {
-      projectRealm.delete(task);
-      setTasks([...projectRealm.objects("Task").sorted("name")]);
+        const comicFound = projectRealm.objectForPrimaryKey("comic", comicId);
+        comicFound.title = "aaa";
+        //comicFound.subtitle = subtitle;
     });
   };
 
@@ -92,9 +63,7 @@ const TasksProvider = ({ children, projectPartition }) => {
   return (
     <TasksContext.Provider
       value={{
-        createTask,
-        deleteTask,
-        setTaskStatus,
+        saveComic,
         tasks,
       }}
     >
