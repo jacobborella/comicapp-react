@@ -6,15 +6,14 @@ import styles from "../stylesheet";
 import { Overlay } from "react-native-elements";
 import { ManageTeam } from "../components/ManageTeam";
 
-import { useTasks } from "../providers/TasksProvider";
-import { TaskItem } from "../components/TaskItem";
+import { useComic } from "../providers/ComicProvider";
 import { AddTask } from "../components/AddTask";
 
 export function ComicView({ route, navigation }) {
 
   const [overlayVisible, setOverlayVisible] = useState(false);
   const { comicId } = route.params;
-  const { tasks, saveComic } = useTasks();
+  const { comic, saveComic } = useComic();
   const [ title, setTitle] = useState('');
   const [ subtitle, setSubtitle] = useState('');
 
@@ -33,7 +32,7 @@ export function ComicView({ route, navigation }) {
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={setTitle}
-          defaultValue={tasks.title}
+          defaultValue={comic.title}
           placeholder="title"
           style={styles.inputStyle}
           autoCapitalize="none"
@@ -43,7 +42,7 @@ export function ComicView({ route, navigation }) {
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={setSubtitle}
-          defaultValue={tasks.subtitle}
+          defaultValue={comic.subtitle}
           placeholder="subtitle"
           style={styles.inputStyle}
           autoCapitalize="none"

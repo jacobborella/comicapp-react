@@ -5,7 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { AuthProvider } from "./providers/AuthProvider";
 import { ComicListProvider } from "./providers/ComicListProvider";
-import { TasksProvider } from "./providers/TasksProvider";
+import { ComicProvider } from "./providers/ComicProvider";
 
 import { WelcomeView } from "./views/WelcomeView";
 import { ComicListView } from "./views/ComicListView";
@@ -40,9 +40,9 @@ const App = () => {
               const { navigation } = props;
               const { route } = props;
               return (
-                <TasksProvider navigation={navigation} route={route}>
+                <ComicProvider navigation={navigation} route={route}>
                   <ComicView navigation={navigation} route={route}/>
-                </TasksProvider>
+                </ComicProvider>
               );
             }}
           </Stack.Screen>

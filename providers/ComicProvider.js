@@ -3,10 +3,10 @@ import Realm from "realm";
 import { comicSchema } from "../schemas";
 import { useAuth } from "./AuthProvider";
 
-const TasksContext = React.createContext(null);
+const ComicContext = React.createContext(null);
 
-const TasksProvider = ({ children, route }) => {
-  const [tasks, setTasks] = useState([]);
+const ComicProvider = ({ children, route }) => {
+  const [comic, setComic] = useState([]);
   const { user } = useAuth();
   const { comicId } = route.params;
 
@@ -27,13 +27,7 @@ const TasksProvider = ({ children, route }) => {
       realmRef.current = projectRealm;
 
       const comicFound = projectRealm.objectForPrimaryKey("comic", comicId);
-      setTasks(comicFound);
-      /*
-      comicFound.addListener(() => {
-        //TODO: hvorfor virker det ikke? setTasks({ ...comicFound })
-        console.log('something changed');
-      });
-      */
+      setComic(comicFound);
     });
 
     return () => {
@@ -42,7 +36,7 @@ const TasksProvider = ({ children, route }) => {
       if (projectRealm) {
         projectRealm.close();
         realmRef.current = null;
-        setTasks([]);
+        setComic({});
       }
     };
   }, [user]);
@@ -52,10 +46,10 @@ const TasksProvider = ({ children, route }) => {
     const projectRealm = realmRef.current;
     projectRealm.write(() => {
         if(title.length>0) {
-          tasks.title=title;
+          comic.title=title;
         }
         if(subtitle.length>0) {
-          tasks.subtitle=subtitle;
+          comic.subtitle=subtitle;
         }
     });
   };
@@ -64,26 +58,26 @@ const TasksProvider = ({ children, route }) => {
   // everything that should be made available to descendants that use the
   // useTasks hook.
   return (
-    <TasksContext.Provider
+    <ComicContext.Provider
       value={{
         saveComic,
-        tasks,
+        comic,
       }}
     >
       {children}
-    </TasksContext.Provider>
+    </ComicContext.Provider>
   );
 };
 
 // The useTasks hook can be used by any descendant of the TasksProvider. It
 // provides the tasks of the TasksProvider's project and various functions to
 // create, update, and delete the tasks in that project.
-const useTasks = () => {
-  const task = useContext(TasksContext);
-  if (task == null) {
-    throw new Error("useTasks() called outside of a TasksProvider?"); // an alert is not placed because this is an error for the developer not the user
+const useComic = () => {
+  const comic = useContext(ComicContext);
+  if (comic == null) {
+    throw new Error("useComic() called outside of a ComicProvider?"); // an alert is not placed because this is an error for the developer not the user
   }
-  return task;
+  return comic;
 };
 
-export { TasksProvider, useTasks };
+export { ComicProvider, useComic };
