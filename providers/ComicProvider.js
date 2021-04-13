@@ -9,8 +9,10 @@ const ComicProvider = ({ children, route }) => {
   const [comic, setComic] = useState([]);
   const { user } = useAuth();
   const { comicId } = route.params;
+  const [ subtitleInput, setSubtitleInput ] = useState(null);
+  const [ titleInput, setTitleInput ] = useState(null);
 
-  // Use a Ref to store the realm rather than the state because it is not
+  // Use a Ref to store the realm rather tha0n the state because it is not
   // directly rendered, so updating it should not trigger a re-render as using
   // state would.
   const realmRef = useRef(null);
@@ -25,13 +27,16 @@ const ComicProvider = ({ children, route }) => {
     // open a realm for this particular project
     Realm.open(config).then((projectRealm) => {
       realmRef.current = projectRealm;
-
       const comicFound = projectRealm.objectForPrimaryKey("comic", comicId);
       setComic(comicFound);
+
+      setSubtitleInput(comicFound.subtitle)
+      setTitleInput(comicFound.title)
     });
 
     return () => {
       // cleanup function
+      console.log(subtitleInput)
       const projectRealm = realmRef.current;
       if (projectRealm) {
         projectRealm.close();
@@ -41,18 +46,20 @@ const ComicProvider = ({ children, route }) => {
     };
   }, [user]);
 
-/* TODO: denne metode må kunne gøres pænere*/
-  const saveComic = (title, subtitle) => {
+  const saveTitle = (title) => {
+    setTitleInput(title);
+  }
+  const saveSubtitle = (subtitle) => {
+    setSubtitleInput(subtitle);
+  }
+
+  const saveComic = () => {
     const projectRealm = realmRef.current;
     projectRealm.write(() => {
-        if(title.length>0) {
-          comic.title=title;
-        }
-        if(subtitle.length>0) {
-          comic.subtitle=subtitle;
-        }
+      comic.title = titleInput;
+      comic.subtitle = subtitleInput;
     });
-  };
+  }
 
   // Render the children within the TaskContext's provider. The value contains
   // everything that should be made available to descendants that use the
@@ -60,6 +67,8 @@ const ComicProvider = ({ children, route }) => {
   return (
     <ComicContext.Provider
       value={{
+        saveSubtitle,
+        saveTitle,
         saveComic,
         comic,
       }}
