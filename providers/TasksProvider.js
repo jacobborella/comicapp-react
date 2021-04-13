@@ -47,13 +47,16 @@ const TasksProvider = ({ children, route }) => {
     };
   }, [user]);
 
-  const saveComic = (comicId, title) => {
-    console.log(title);
+/* TODO: denne metode må kunne gøres pænere*/
+  const saveComic = (title, subtitle) => {
     const projectRealm = realmRef.current;
     projectRealm.write(() => {
-        const comicFound = projectRealm.objectForPrimaryKey("comic", comicId);
-        comicFound.title = "aaa";
-        //comicFound.subtitle = subtitle;
+        if(title.length>0) {
+          tasks.title=title;
+        }
+        if(subtitle.length>0) {
+          tasks.subtitle=subtitle;
+        }
     });
   };
 

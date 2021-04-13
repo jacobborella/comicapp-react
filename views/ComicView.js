@@ -14,7 +14,9 @@ export function ComicView({ route, navigation }) {
 
   const [overlayVisible, setOverlayVisible] = useState(false);
   const { comicId } = route.params;
-  const { tasks } = useTasks();
+  const { tasks, saveComic } = useTasks();
+  const [ title, setTitle] = useState('');
+  const [ subtitle, setSubtitle] = useState('');
 
   useEffect(() => {
     navigation.setOptions({
@@ -30,8 +32,8 @@ export function ComicView({ route, navigation }) {
       <Text>Title:</Text>
       <View style={styles.inputContainer}>
         <TextInput
-//          onChangeText={setEmail}
-          value={tasks.title}
+          onChangeText={setTitle}
+          defaultValue={tasks.title}
           placeholder="title"
           style={styles.inputStyle}
           autoCapitalize="none"
@@ -40,13 +42,14 @@ export function ComicView({ route, navigation }) {
       <Text>Subtitle:</Text>
       <View style={styles.inputContainer}>
         <TextInput
-//          onChangeText={setEmail}
-          value={tasks.subtitle}
+          onChangeText={setSubtitle}
+          defaultValue={tasks.subtitle}
           placeholder="subtitle"
           style={styles.inputStyle}
           autoCapitalize="none"
         />
       </View>
+      <Button title="Save" onPress={()=>saveComic(title, subtitle)}/>
     </View>
   );
 }
