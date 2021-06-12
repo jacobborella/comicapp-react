@@ -6,3 +6,9 @@ npx react-native start
 npx react-native run-android
 
 source (https://reactnative.dev/docs/environment-setup)
+
+Run on IOS with
+cd ios
+pod install
+cd ..
+npx react-native run-ios
