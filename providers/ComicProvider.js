@@ -9,7 +9,7 @@ const ComicProvider = ({ children, route }) => {
   const [comic, setComic] = useState([]);
   const { user } = useAuth();
   const { comicId } = route.params;
-  const [ subtitleInput, setSubtitleInput ] = useState(null);
+  const [ noInput, setNoInput ] = useState(null);
   const [ titleInput, setTitleInput ] = useState(null);
 
   // Use a Ref to store the realm rather tha0n the state because it is not
@@ -30,13 +30,13 @@ const ComicProvider = ({ children, route }) => {
       const comicFound = projectRealm.objectForPrimaryKey("comic", comicId);
       setComic(comicFound);
 
-      setSubtitleInput(comicFound.subtitle)
+      setNoInput(comicFound.no)
       setTitleInput(comicFound.title)
     });
 
     return () => {
       // cleanup function
-      console.log(subtitleInput)
+      console.log(noInput)
       const projectRealm = realmRef.current;
       if (projectRealm) {
         projectRealm.close();
@@ -49,15 +49,15 @@ const ComicProvider = ({ children, route }) => {
   const saveTitle = (title) => {
     setTitleInput(title);
   }
-  const saveSubtitle = (subtitle) => {
-    setSubtitleInput(subtitle);
+  const saveNo = (no) => {
+    setNoInput(no);
   }
 
   const saveComic = () => {
     const projectRealm = realmRef.current;
     projectRealm.write(() => {
       comic.title = titleInput;
-      comic.subtitle = subtitleInput;
+      comic.no = noInput;
     });
   }
 
@@ -67,7 +67,7 @@ const ComicProvider = ({ children, route }) => {
   return (
     <ComicContext.Provider
       value={{
-        saveSubtitle,
+        saveNo,
         saveTitle,
         saveComic,
         comic,
