@@ -12,3 +12,6 @@ cd ios
 pod install
 cd ..
 npx react-native run-ios
+
+#Known issues
+Installing pods on ios https://github.com/CocoaPods/CocoaPods/issues/10518
