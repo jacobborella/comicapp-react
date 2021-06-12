@@ -20,7 +20,7 @@ export function ComicListView({navigation}) {
                       renderItem={({item, index}) => {
                         return <ComicItem comic={item} navigation={navigation}/>
                       }}
-                      keyExtractor={(item, index) => item._id}
+                      keyExtractor={(item, index) => item._id.toString()}
                           />
   );
 }

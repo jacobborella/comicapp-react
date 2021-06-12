@@ -27,7 +27,7 @@ const ComicListProvider = ({ navigation, children}) => {
       realmRef.current = projectRealm;
 
       const syncTasks = projectRealm.objects("comic");
-      let sortedTasks = syncTasks.sorted(["title", "subtitle"]);
+      let sortedTasks = syncTasks.sorted(["title", "no"]);
       setComics([...sortedTasks]);
       sortedTasks.addListener(() => {
         setComics([...sortedTasks]);

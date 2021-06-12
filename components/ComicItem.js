@@ -7,7 +7,7 @@ export function ComicItem({ navigation, comic }) {
     <>
       <ListItem
         key={comic._id}
-        title={comic.title + (comic.subtitle? ' ' + comic.subtitle: '')}
+        title={comic.title + (comic.no? ' ' + comic.no: '')}
         onPress={() => {
                   navigation.navigate('Comic View', {
                     comicId: comic._id,
